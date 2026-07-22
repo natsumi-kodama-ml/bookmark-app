@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 const TABS = [
   { href: "/", label: "記事一覧", emoji: "📚" },
   { href: "/vocabulary", label: "単語帳", emoji: "🔤" },
-  { href: "/records", label: "学習記録", emoji: "📝" },
 ];
 
 export function TabNav() {

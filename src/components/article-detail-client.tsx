@@ -14,7 +14,6 @@ import { BookmarkFormDialog } from "@/components/bookmark-form-dialog";
 import { WordFormDialog } from "@/components/word-form-dialog";
 import { CategoryBadge, LevelBadge } from "@/components/badges";
 import { StatusSelect } from "@/components/status-select";
-import { SiteFavicon } from "@/components/site-favicon";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useVocabulary } from "@/hooks/use-vocabulary";
 import { getDomain, formatDate } from "@/lib/format";
@@ -75,9 +74,8 @@ export function ArticleDetailClient({ id }: { id: string }) {
               href={bookmark.url}
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground hover:underline"
+              className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground hover:underline"
             >
-              <SiteFavicon url={bookmark.url} />
               <ArrowSquareOut className="size-4" />
               {getDomain(bookmark.url)} で開く
             </a>
