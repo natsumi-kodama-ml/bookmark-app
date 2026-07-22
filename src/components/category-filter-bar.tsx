@@ -1,21 +1,17 @@
 "use client";
 
-import { tagColorClass } from "@/lib/format";
+import { CATEGORIES, type CategoryId } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export function TagFilterBar({
-  tags,
+export function CategoryFilterBar({
   selected,
   onToggle,
   onClear,
 }: {
-  tags: string[];
-  selected: string[];
-  onToggle: (tag: string) => void;
+  selected: CategoryId[];
+  onToggle: (id: CategoryId) => void;
   onClear: () => void;
 }) {
-  if (tags.length === 0) return null;
-
   return (
     <div className="-mx-4 overflow-x-auto sm:mx-0">
       <div className="flex items-center gap-1.5 px-4 sm:px-0">
@@ -31,22 +27,23 @@ export function TagFilterBar({
         >
           すべて
         </button>
-        {tags.map((tag) => {
-          const active = selected.includes(tag);
+        {CATEGORIES.map((c) => {
+          const active = selected.includes(c.id);
           return (
             <button
-              key={tag}
+              key={c.id}
               type="button"
-              onClick={() => onToggle(tag)}
+              onClick={() => onToggle(c.id)}
               className={cn(
-                "shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all",
-                tagColorClass(tag),
+                "inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-all",
+                c.colorClass,
                 active
                   ? "ring-2 ring-offset-1 ring-foreground/30"
                   : "opacity-60 hover:opacity-100",
               )}
             >
-              {tag}
+              <span>{c.emoji}</span>
+              {c.label}
             </button>
           );
         })}

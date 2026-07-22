@@ -17,7 +17,7 @@ export function EmptyLibraryState({
       </span>
       <div className="flex flex-col gap-1.5">
         <p className="font-heading text-base font-semibold">
-          まだブックマークは登録されていません
+          まだ記事は登録されていません
         </p>
         <p className="max-w-sm text-sm text-muted-foreground">
           Daily Newsで気になった記事を登録して、あとで復習できるようにしましょう。
@@ -35,7 +35,7 @@ export function EmptyLibraryState({
         triggerLabel={
           <>
             <Plus weight="bold" className="size-4" />
-            ブックマークを登録する
+            記事を登録する
           </>
         }
       />
@@ -51,10 +51,10 @@ export function EmptySearchState({ onClear }: { onClear: () => void }) {
       </span>
       <div className="flex flex-col gap-1">
         <p className="font-heading text-sm font-semibold">
-          該当するブックマークがありません
+          該当する記事がありません
         </p>
         <p className="text-sm text-muted-foreground">
-          キーワードを変えるか、タグの絞り込みを解除してみましょう。
+          キーワードを変えるか、カテゴリ・レベルの絞り込みを解除してみましょう。
         </p>
       </div>
       <Button variant="outline" size="sm" onClick={onClear}>

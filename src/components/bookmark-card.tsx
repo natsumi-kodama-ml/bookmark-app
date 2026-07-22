@@ -1,29 +1,29 @@
 "use client";
 
+import Link from "next/link";
 import { ArrowSquareOut, PencilSimple, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { BookmarkFormDialog } from "@/components/bookmark-form-dialog";
-import { getDomain, formatDate, tagColorClass } from "@/lib/format";
-import type { Bookmark, BookmarkInput } from "@/lib/types";
+import { CategoryBadge, LevelBadge } from "@/components/badges";
+import { StatusSelect } from "@/components/status-select";
+import { getDomain, formatDate } from "@/lib/format";
+import type { Bookmark, BookmarkInput, StatusId } from "@/lib/types";
 
 export function BookmarkCard({
   bookmark,
   onUpdate,
   onRemove,
+  onStatusChange,
 }: {
   bookmark: Bookmark;
   onUpdate: (value: BookmarkInput) => void;
   onRemove: () => void;
+  onStatusChange: (status: StatusId) => void;
 }) {
   return (
     <article className="flex flex-col gap-3 rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-shadow hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
-        <a
-          href={bookmark.url}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="group flex flex-1 flex-col gap-0.5"
-        >
+        <Link href={`/articles/${bookmark.id}`} className="group flex flex-1 flex-col gap-0.5">
           <h2 className="font-heading text-sm leading-snug font-semibold group-hover:underline">
             {bookmark.title}
           </h2>
@@ -31,7 +31,7 @@ export function BookmarkCard({
             <ArrowSquareOut className="size-3.5" />
             {getDomain(bookmark.url)}
           </span>
-        </a>
+        </Link>
         <div className="flex shrink-0 items-center gap-1">
           <BookmarkFormDialog
             mode="edit"
@@ -39,7 +39,9 @@ export function BookmarkCard({
               title: bookmark.title,
               url: bookmark.url,
               memo: bookmark.memo,
-              tags: bookmark.tags,
+              category: bookmark.category,
+              level: bookmark.level,
+              status: bookmark.status,
             }}
             onSubmit={onUpdate}
             renderTrigger={
@@ -68,17 +70,13 @@ export function BookmarkCard({
         </p>
       )}
 
+      <div className="flex flex-wrap items-center gap-1.5">
+        <CategoryBadge id={bookmark.category} />
+        <LevelBadge level={bookmark.level} />
+      </div>
+
       <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-1">
-        <div className="flex flex-wrap gap-1">
-          {bookmark.tags.map((tag) => (
-            <span
-              key={tag}
-              className={`rounded-full px-2 py-0.5 text-xs font-medium ${tagColorClass(tag)}`}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        <StatusSelect value={bookmark.status} onChange={onStatusChange} />
         <span className="shrink-0 text-xs text-muted-foreground">
           {formatDate(bookmark.createdAt)}
         </span>

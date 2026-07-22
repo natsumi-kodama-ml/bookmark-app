@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
+import { SiteHeader } from "@/components/site-header";
+import { TabNav } from "@/components/tab-nav";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({
@@ -21,7 +23,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={`${notoSansJP.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <SiteHeader />
+        <TabNav />
+        {children}
+      </body>
     </html>
   );
 }

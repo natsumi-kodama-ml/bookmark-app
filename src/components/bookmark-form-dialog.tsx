@@ -15,10 +15,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { TagInput } from "@/components/tag-input";
+import { CategoryPicker } from "@/components/category-picker";
+import { LevelPicker } from "@/components/level-picker";
+import { StatusSelect } from "@/components/status-select";
 import type { BookmarkInput } from "@/lib/types";
 
-const EMPTY_VALUE: BookmarkInput = { title: "", url: "", memo: "", tags: [] };
+const EMPTY_VALUE: BookmarkInput = {
+  title: "",
+  url: "",
+  memo: "",
+  category: null,
+  level: null,
+  status: "unread",
+};
 
 export function BookmarkFormDialog({
   mode,
@@ -52,7 +61,9 @@ export function BookmarkFormDialog({
       title: value.title.trim(),
       url: value.url.trim(),
       memo: value.memo.trim(),
-      tags: value.tags,
+      category: value.category,
+      level: value.level,
+      status: value.status,
     });
     setOpen(false);
   };
@@ -105,11 +116,27 @@ export function BookmarkFormDialog({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label>タグ</Label>
-            <TagInput
-              value={value.tags}
-              onChange={(tags) => setValue((v) => ({ ...v, tags }))}
-              placeholder="タグを入力してEnter（例: Business, Vocabulary）"
+            <Label>カテゴリ</Label>
+            <CategoryPicker
+              value={value.category}
+              onChange={(category) => setValue((v) => ({ ...v, category }))}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label>レベル</Label>
+            <LevelPicker
+              value={value.level}
+              onChange={(level) => setValue((v) => ({ ...v, level }))}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label>ステータス</Label>
+            <StatusSelect
+              value={value.status}
+              onChange={(status) => setValue((v) => ({ ...v, status }))}
+              className="self-start"
             />
           </div>
 
