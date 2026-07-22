@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowSquareOut, PencilSimple, Trash } from "@phosphor-icons/react";
+import { PencilSimple, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { BookmarkFormDialog } from "@/components/bookmark-form-dialog";
 import { CategoryBadge, LevelBadge } from "@/components/badges";
 import { StatusSelect } from "@/components/status-select";
+import { SiteFavicon } from "@/components/site-favicon";
 import { getDomain, formatDate } from "@/lib/format";
 import type { Bookmark, BookmarkInput, StatusId } from "@/lib/types";
 
@@ -27,8 +28,8 @@ export function BookmarkCard({
           <h2 className="font-heading text-sm leading-snug font-semibold group-hover:underline">
             {bookmark.title}
           </h2>
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-            <ArrowSquareOut className="size-3.5" />
+          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <SiteFavicon url={bookmark.url} />
             {getDomain(bookmark.url)}
           </span>
         </Link>

@@ -6,6 +6,10 @@ export type MonthRecord = {
   label: string;
   articleCount: number;
   wordCount: number;
+  masteredCount: number;
+  masteryRate: number;
+  articleDelta: number | null;
+  wordDelta: number | null;
   categories: Array<{
     id: CategoryId;
     label: string;
@@ -15,10 +19,20 @@ export type MonthRecord = {
   }>;
 };
 
-export function buildMonthRecords(
-  bookmarks: Bookmark[],
-  words: VocabWord[],
-): MonthRecord[] {
+export type RecordsSummary = {
+  totalArticles: number;
+  totalWords: number;
+  masteredWords: number;
+  masteryRate: number;
+  readArticles: number;
+};
+
+export type Records = {
+  summary: RecordsSummary;
+  months: MonthRecord[];
+};
+
+export function buildRecords(bookmarks: Bookmark[], words: VocabWord[]): Records {
   const bookmarkById = new Map(bookmarks.map((b) => [b.id, b]));
   const months = new Map<string, { articles: Bookmark[]; words: VocabWord[] }>();
 
@@ -33,7 +47,7 @@ export function buildMonthRecords(
     months.get(key)!.words.push(word);
   }
 
-  const records: MonthRecord[] = [];
+  const draft: Omit<MonthRecord, "articleDelta" | "wordDelta">[] = [];
   for (const [key, { articles, words: monthWords }] of months) {
     const categoryCounts = new Map<
       CategoryId,
@@ -69,14 +83,47 @@ export function buildMonthRecords(
       }),
     );
 
-    records.push({
+    const masteredCount = monthWords.filter((w) => w.status === "mastered").length;
+
+    draft.push({
       key,
       label: formatMonthLabel(key),
       articleCount: articles.length,
       wordCount: monthWords.length,
+      masteredCount,
+      masteryRate:
+        monthWords.length === 0
+          ? 0
+          : Math.round((masteredCount / monthWords.length) * 100),
       categories,
     });
   }
 
-  return records.sort((a, b) => (a.key < b.key ? 1 : -1));
+  draft.sort((a, b) => (a.key < b.key ? 1 : -1));
+
+  const monthRecords: MonthRecord[] = draft.map((month, index) => {
+    const previous = draft[index + 1];
+    return {
+      ...month,
+      articleDelta: previous ? month.articleCount - previous.articleCount : null,
+      wordDelta: previous ? month.wordCount - previous.wordCount : null,
+    };
+  });
+
+  const totalWords = words.length;
+  const masteredWords = words.filter((w) => w.status === "mastered").length;
+  const readArticles = bookmarks.filter(
+    (b) => b.status === "read" || b.status === "mastered",
+  ).length;
+
+  return {
+    summary: {
+      totalArticles: bookmarks.length,
+      totalWords,
+      masteredWords,
+      masteryRate: totalWords === 0 ? 0 : Math.round((masteredWords / totalWords) * 100),
+      readArticles,
+    },
+    months: monthRecords,
+  };
 }

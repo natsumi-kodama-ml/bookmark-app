@@ -8,12 +8,29 @@ const listeners = new Set<() => void>();
 const EMPTY: VocabWord[] = [];
 let cache: VocabWord[] | null = null;
 
+// Older entries were saved before the `example` field existed.
+function normalize(raw: unknown): VocabWord | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  if (typeof r.id !== "string" || typeof r.word !== "string") return null;
+  return {
+    id: r.id,
+    word: r.word,
+    meaning: typeof r.meaning === "string" ? r.meaning : "",
+    example: typeof r.example === "string" ? r.example : "",
+    bookmarkId: typeof r.bookmarkId === "string" ? r.bookmarkId : "",
+    status: r.status === "mastered" ? "mastered" : "learning",
+    createdAt: typeof r.createdAt === "string" ? r.createdAt : new Date().toISOString(),
+  };
+}
+
 function readFromStorage(): VocabWord[] {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map(normalize).filter((w): w is VocabWord => w !== null);
   } catch {
     return [];
   }

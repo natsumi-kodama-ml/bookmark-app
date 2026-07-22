@@ -14,25 +14,30 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
-export type WordFormValue = { word: string; meaning: string };
+export type WordFormValue = { word: string; meaning: string; example: string };
 
-const EMPTY_VALUE: WordFormValue = { word: "", meaning: "" };
+const EMPTY_VALUE: WordFormValue = { word: "", meaning: "", example: "" };
 
-export function AddWordDialog({
+export function WordFormDialog({
+  mode,
+  initialValue,
   onSubmit,
   renderTrigger,
   triggerLabel,
 }: {
+  mode: "create" | "edit";
+  initialValue?: WordFormValue;
   onSubmit: (value: WordFormValue) => void;
   renderTrigger: ReactElement;
   triggerLabel: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<WordFormValue>(EMPTY_VALUE);
+  const [value, setValue] = useState<WordFormValue>(initialValue ?? EMPTY_VALUE);
 
   const handleOpenChange = (nextOpen: boolean) => {
-    if (nextOpen) setValue(EMPTY_VALUE);
+    if (nextOpen) setValue(initialValue ?? EMPTY_VALUE);
     setOpen(nextOpen);
   };
 
@@ -41,7 +46,11 @@ export function AddWordDialog({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
-    onSubmit({ word: value.word.trim(), meaning: value.meaning.trim() });
+    onSubmit({
+      word: value.word.trim(),
+      meaning: value.meaning.trim(),
+      example: value.example.trim(),
+    });
     setOpen(false);
   };
 
@@ -51,7 +60,9 @@ export function AddWordDialog({
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <DialogHeader>
-            <DialogTitle>単語を追加する</DialogTitle>
+            <DialogTitle>
+              {mode === "create" ? "単語を追加する" : "単語を編集する"}
+            </DialogTitle>
             <DialogDescription>
               この記事で覚えた単語や表現を記録しましょう。
             </DialogDescription>
@@ -75,12 +86,21 @@ export function AddWordDialog({
               placeholder="例）職業"
             />
           </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="word-example">例文</Label>
+            <Textarea
+              id="word-example"
+              value={value.example}
+              onChange={(e) => setValue((v) => ({ ...v, example: e.target.value }))}
+              placeholder="例）She has an unusual occupation."
+            />
+          </div>
           <DialogFooter>
             <DialogClose render={<Button type="button" variant="outline" />}>
               キャンセル
             </DialogClose>
             <Button type="submit" disabled={!canSubmit}>
-              追加する
+              {mode === "create" ? "追加する" : "保存する"}
             </Button>
           </DialogFooter>
         </form>

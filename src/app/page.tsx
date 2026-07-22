@@ -7,8 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { BookmarkFormDialog } from "@/components/bookmark-form-dialog";
 import { BookmarkCard } from "@/components/bookmark-card";
-import { CategoryFilterBar } from "@/components/category-filter-bar";
-import { LevelFilterBar } from "@/components/level-filter-bar";
+import { ArticleFilterMenu } from "@/components/article-filter-menu";
 import { PaginationBar } from "@/components/pagination-bar";
 import { EmptyLibraryState, EmptySearchState } from "@/components/empty-state";
 import { getLevelBand, type CategoryId } from "@/lib/types";
@@ -89,6 +88,17 @@ export default function ArticlesPage() {
                 className="pl-8"
               />
             </div>
+            <ArticleFilterMenu
+              selectedCategories={selectedCategories}
+              selectedLevels={selectedLevels}
+              onToggleCategory={toggleCategory}
+              onToggleLevel={toggleLevel}
+              onClear={() => {
+                setSelectedCategories([]);
+                setSelectedLevels([]);
+                setPage(1);
+              }}
+            />
             <BookmarkFormDialog
               mode="create"
               onSubmit={addBookmark}
@@ -106,23 +116,6 @@ export default function ArticlesPage() {
               }
             />
           </div>
-
-          <CategoryFilterBar
-            selected={selectedCategories}
-            onToggle={toggleCategory}
-            onClear={() => {
-              setSelectedCategories([]);
-              setPage(1);
-            }}
-          />
-          <LevelFilterBar
-            selected={selectedLevels}
-            onToggle={toggleLevel}
-            onClear={() => {
-              setSelectedLevels([]);
-              setPage(1);
-            }}
-          />
 
           {filtered.length === 0 ? (
             <EmptySearchState onClear={clearFilters} />

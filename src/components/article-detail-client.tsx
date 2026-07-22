@@ -11,9 +11,10 @@ import {
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { BookmarkFormDialog } from "@/components/bookmark-form-dialog";
-import { AddWordDialog } from "@/components/add-word-dialog";
+import { WordFormDialog } from "@/components/word-form-dialog";
 import { CategoryBadge, LevelBadge } from "@/components/badges";
 import { StatusSelect } from "@/components/status-select";
+import { SiteFavicon } from "@/components/site-favicon";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useVocabulary } from "@/hooks/use-vocabulary";
 import { getDomain, formatDate } from "@/lib/format";
@@ -74,8 +75,9 @@ export function ArticleDetailClient({ id }: { id: string }) {
               href={bookmark.url}
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground hover:underline"
+              className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground hover:underline"
             >
+              <SiteFavicon url={bookmark.url} />
               <ArrowSquareOut className="size-4" />
               {getDomain(bookmark.url)} で開く
             </a>
@@ -149,11 +151,13 @@ export function ArticleDetailClient({ id }: { id: string }) {
       <div className="mt-6 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h2 className="font-heading text-base font-semibold">New Words</h2>
-          <AddWordDialog
+          <WordFormDialog
+            mode="create"
             onSubmit={(value) =>
               addWord({
                 word: value.word,
                 meaning: value.meaning,
+                example: value.example,
                 bookmarkId: bookmark.id,
                 status: "learning",
               })
@@ -181,17 +185,41 @@ export function ArticleDetailClient({ id }: { id: string }) {
               >
                 <div className="flex items-start justify-between gap-1">
                   <p className="text-sm font-semibold">{w.word}</p>
-                  <button
-                    type="button"
-                    onClick={() => removeWord(w.id)}
-                    className="text-muted-foreground hover:text-destructive"
-                    aria-label={`${w.word} を削除`}
-                  >
-                    <Trash className="size-3.5" />
-                  </button>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <WordFormDialog
+                      mode="edit"
+                      initialValue={{
+                        word: w.word,
+                        meaning: w.meaning,
+                        example: w.example,
+                      }}
+                      onSubmit={(value) => updateWord(w.id, value)}
+                      renderTrigger={
+                        <button
+                          type="button"
+                          className="text-muted-foreground hover:text-foreground"
+                          aria-label={`${w.word} を編集`}
+                        />
+                      }
+                      triggerLabel={<PencilSimple className="size-3.5" />}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeWord(w.id)}
+                      className="text-muted-foreground hover:text-destructive"
+                      aria-label={`${w.word} を削除`}
+                    >
+                      <Trash className="size-3.5" />
+                    </button>
+                  </div>
                 </div>
                 {w.meaning && (
                   <p className="text-xs text-muted-foreground">{w.meaning}</p>
+                )}
+                {w.example && (
+                  <p className="line-clamp-2 text-xs text-muted-foreground italic">
+                    &ldquo;{w.example}&rdquo;
+                  </p>
                 )}
                 <button
                   type="button"

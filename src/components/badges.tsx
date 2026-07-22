@@ -21,13 +21,9 @@ export function LevelBadge({ level }: { level: number | null }) {
   const band = getLevelBand(level);
   if (level === null || !band) return null;
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-        band.colorClass,
-      )}
-    >
-      Lv.{level} {band.label}
+    <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+      Lv.{level}
+      <span className="text-muted-foreground/70">・{band.label}</span>
     </span>
   );
 }

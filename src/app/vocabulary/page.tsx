@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { MagnifyingGlass, PushPin, Trash } from "@phosphor-icons/react";
+import { MagnifyingGlass, PencilSimple, PushPin, Trash } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { WordFormDialog } from "@/components/word-form-dialog";
 import { useVocabulary } from "@/hooks/use-vocabulary";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { formatDate } from "@/lib/format";
@@ -103,6 +104,11 @@ export default function VocabularyPage() {
                           {w.meaning}
                         </p>
                       )}
+                      {w.example && (
+                        <p className="text-sm text-muted-foreground italic">
+                          &ldquo;{w.example}&rdquo;
+                        </p>
+                      )}
                       {source && (
                         <Link
                           href={`/articles/${source.id}`}
@@ -134,14 +140,33 @@ export default function VocabularyPage() {
                       >
                         {w.status === "mastered" ? "習得済み" : "学習中"}
                       </button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        aria-label={`${w.word} を削除`}
-                        onClick={() => removeWord(w.id)}
-                      >
-                        <Trash className="size-4" />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <WordFormDialog
+                          mode="edit"
+                          initialValue={{
+                            word: w.word,
+                            meaning: w.meaning,
+                            example: w.example,
+                          }}
+                          onSubmit={(value) => updateWord(w.id, value)}
+                          renderTrigger={
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label={`${w.word} を編集`}
+                            />
+                          }
+                          triggerLabel={<PencilSimple className="size-4" />}
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={`${w.word} を削除`}
+                          onClick={() => removeWord(w.id)}
+                        >
+                          <Trash className="size-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
-import type { Bookmark, BookmarkInput, CategoryId } from "@/lib/types";
+import { STATUSES, type Bookmark, type BookmarkInput, type CategoryId } from "@/lib/types";
 
 const STORAGE_KEY = "daily-news-bookmarks:v2";
 const LEGACY_STORAGE_KEY = "daily-news-bookmarks:v1";
@@ -41,6 +41,12 @@ function normalize(raw: unknown): Bookmark | null {
     typeof r.category === "string"
       ? (r.category as CategoryId)
       : matchCategoryFromTags(r.tags);
+  // Older data may carry a status that no longer exists (e.g. the removed
+  // "planned" stage) — fall back to "unread" rather than an invalid value.
+  const status =
+    typeof r.status === "string" && STATUSES.some((s) => s.id === r.status)
+      ? (r.status as Bookmark["status"])
+      : "unread";
   return {
     id: r.id,
     title: r.title,
@@ -48,7 +54,7 @@ function normalize(raw: unknown): Bookmark | null {
     memo: typeof r.memo === "string" ? r.memo : "",
     category,
     level: typeof r.level === "number" ? r.level : null,
-    status: typeof r.status === "string" ? (r.status as Bookmark["status"]) : "unread",
+    status,
     createdAt: typeof r.createdAt === "string" ? r.createdAt : new Date().toISOString(),
   };
 }

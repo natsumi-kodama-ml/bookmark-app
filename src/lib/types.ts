@@ -76,11 +76,6 @@ export const STATUSES = [
     colorClass: "bg-[oklch(0.93_0.005_255)] text-[oklch(0.45_0.01_255)]",
   },
   {
-    id: "planned",
-    label: "読む予定",
-    colorClass: "bg-[oklch(0.93_0.07_85)] text-[oklch(0.45_0.09_85)]",
-  },
-  {
     id: "read",
     label: "読了",
     colorClass: "bg-[oklch(0.92_0.05_190)] text-[oklch(0.38_0.07_190)]",
@@ -120,6 +115,7 @@ export type VocabWord = {
   id: string;
   word: string;
   meaning: string;
+  example: string;
   bookmarkId: string;
   status: "learning" | "mastered";
   createdAt: string;
