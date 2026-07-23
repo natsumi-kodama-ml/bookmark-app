@@ -9,8 +9,9 @@ import { BookmarkFormDialog } from "@/components/bookmark-form-dialog";
 import { BookmarkCard } from "@/components/bookmark-card";
 import { ArticleFilterMenu } from "@/components/article-filter-menu";
 import { PaginationBar } from "@/components/pagination-bar";
+import { CollapsibleArchive } from "@/components/collapsible-archive";
 import { EmptyLibraryState, EmptySearchState } from "@/components/empty-state";
-import { getLevelBand, type CategoryId } from "@/lib/types";
+import { getLevelBand, type Bookmark, type CategoryId } from "@/lib/types";
 
 const PAGE_SIZE = 10;
 
@@ -55,9 +56,18 @@ export default function ArticlesPage() {
     });
   }, [bookmarks, keyword, selectedCategories, selectedLevels]);
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const activeArticles = useMemo(
+    () => filtered.filter((b) => b.status !== "mastered"),
+    [filtered],
+  );
+  const masteredArticles = useMemo(
+    () => filtered.filter((b) => b.status === "mastered"),
+    [filtered],
+  );
+
+  const pageCount = Math.max(1, Math.ceil(activeArticles.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
-  const paged = filtered.slice(
+  const paged = activeArticles.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE,
   );
@@ -68,6 +78,25 @@ export default function ArticlesPage() {
     setSelectedLevels([]);
     setPage(1);
   };
+
+  const renderCard = (bookmark: Bookmark) => (
+    <BookmarkCard
+      key={bookmark.id}
+      bookmark={bookmark}
+      onUpdate={(value) => updateBookmark(bookmark.id, value)}
+      onRemove={() => removeBookmark(bookmark.id)}
+      onStatusChange={(status) =>
+        updateBookmark(bookmark.id, {
+          title: bookmark.title,
+          url: bookmark.url,
+          memo: bookmark.memo,
+          category: bookmark.category,
+          level: bookmark.level,
+          status,
+        })
+      }
+    />
+  );
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
@@ -121,31 +150,28 @@ export default function ArticlesPage() {
             <EmptySearchState onClear={clearFilters} />
           ) : (
             <>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {paged.map((bookmark) => (
-                  <BookmarkCard
-                    key={bookmark.id}
-                    bookmark={bookmark}
-                    onUpdate={(value) => updateBookmark(bookmark.id, value)}
-                    onRemove={() => removeBookmark(bookmark.id)}
-                    onStatusChange={(status) =>
-                      updateBookmark(bookmark.id, {
-                        title: bookmark.title,
-                        url: bookmark.url,
-                        memo: bookmark.memo,
-                        category: bookmark.category,
-                        level: bookmark.level,
-                        status,
-                      })
-                    }
+              {activeArticles.length > 0 && (
+                <>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {paged.map(renderCard)}
+                  </div>
+                  <PaginationBar
+                    page={currentPage}
+                    pageCount={pageCount}
+                    onChange={setPage}
                   />
-                ))}
-              </div>
-              <PaginationBar
-                page={currentPage}
-                pageCount={pageCount}
-                onChange={setPage}
-              />
+                </>
+              )}
+
+              <CollapsibleArchive
+                label="習得済み"
+                count={masteredArticles.length}
+                forceOpen={keyword.trim() !== ""}
+              >
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {masteredArticles.map(renderCard)}
+                </div>
+              </CollapsibleArchive>
             </>
           )}
         </div>
