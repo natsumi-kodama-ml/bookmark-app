@@ -12,12 +12,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { BookmarkFormDialog } from "@/components/bookmark-form-dialog";
 import { WordFormDialog } from "@/components/word-form-dialog";
-import { CategoryBadge, LevelBadge } from "@/components/badges";
+import { CategoryBadge, LevelBadge, PartOfSpeechBadge } from "@/components/badges";
 import { StatusSelect } from "@/components/status-select";
+import { WordStatusSelect } from "@/components/word-status-select";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useVocabulary } from "@/hooks/use-vocabulary";
 import { getDomain, formatDate } from "@/lib/format";
-import { cn } from "@/lib/utils";
 
 export function ArticleDetailClient({ id }: { id: string }) {
   const router = useRouter();
@@ -155,7 +155,9 @@ export function ArticleDetailClient({ id }: { id: string }) {
               addWord({
                 word: value.word,
                 meaning: value.meaning,
-                example: value.example,
+                exampleEn: value.exampleEn,
+                exampleJa: value.exampleJa,
+                partOfSpeech: value.partOfSpeech,
                 bookmarkId: bookmark.id,
                 status: "learning",
               })
@@ -182,14 +184,19 @@ export function ArticleDetailClient({ id }: { id: string }) {
                 className="flex flex-col gap-1 rounded-xl bg-card p-3 ring-1 ring-foreground/10"
               >
                 <div className="flex items-start justify-between gap-1">
-                  <p className="text-sm font-semibold">{w.word}</p>
+                  <div className="flex flex-col gap-1">
+                    <p className="text-sm font-semibold">{w.word}</p>
+                    <PartOfSpeechBadge id={w.partOfSpeech} />
+                  </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <WordFormDialog
                       mode="edit"
                       initialValue={{
                         word: w.word,
                         meaning: w.meaning,
-                        example: w.example,
+                        exampleEn: w.exampleEn,
+                        exampleJa: w.exampleJa,
+                        partOfSpeech: w.partOfSpeech,
                       }}
                       onSubmit={(value) => updateWord(w.id, value)}
                       renderTrigger={
@@ -214,27 +221,21 @@ export function ArticleDetailClient({ id }: { id: string }) {
                 {w.meaning && (
                   <p className="text-xs text-muted-foreground">{w.meaning}</p>
                 )}
-                {w.example && (
+                {w.exampleEn && (
                   <p className="line-clamp-2 text-xs text-muted-foreground italic">
-                    &ldquo;{w.example}&rdquo;
+                    &ldquo;{w.exampleEn}&rdquo;
                   </p>
                 )}
-                <button
-                  type="button"
-                  onClick={() =>
-                    updateWord(w.id, {
-                      status: w.status === "learning" ? "mastered" : "learning",
-                    })
-                  }
-                  className={cn(
-                    "mt-1 w-fit rounded-full px-2 py-0.5 text-[0.65rem] font-medium",
-                    w.status === "mastered"
-                      ? "bg-[oklch(0.92_0.05_140)] text-[oklch(0.38_0.08_140)]"
-                      : "bg-[oklch(0.93_0.005_255)] text-[oklch(0.45_0.01_255)]",
-                  )}
-                >
-                  {w.status === "mastered" ? "習得済み" : "学習中"}
-                </button>
+                {w.exampleJa && (
+                  <p className="line-clamp-2 text-xs text-muted-foreground">
+                    {w.exampleJa}
+                  </p>
+                )}
+                <WordStatusSelect
+                  value={w.status}
+                  onChange={(status) => updateWord(w.id, { status })}
+                  className="mt-1 w-fit"
+                />
               </div>
             ))}
           </div>

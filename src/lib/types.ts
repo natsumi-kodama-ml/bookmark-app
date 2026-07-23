@@ -111,13 +111,48 @@ export type Bookmark = {
 
 export type BookmarkInput = Omit<Bookmark, "id" | "createdAt">;
 
+export const WORD_STATUSES = [
+  {
+    id: "learning",
+    label: "学習中",
+    colorClass: "bg-[oklch(0.93_0.005_255)] text-[oklch(0.45_0.01_255)]",
+  },
+  {
+    id: "mastered",
+    label: "習得済み",
+    colorClass: "bg-[oklch(0.92_0.05_140)] text-[oklch(0.38_0.08_140)]",
+  },
+] as const;
+
+export type WordStatusId = (typeof WORD_STATUSES)[number]["id"];
+
+export const PARTS_OF_SPEECH = [
+  { id: "noun", label: "名詞" },
+  { id: "verb", label: "動詞" },
+  { id: "adjective", label: "形容詞" },
+  { id: "adverb", label: "副詞" },
+  { id: "preposition", label: "前置詞" },
+  { id: "conjunction", label: "接続詞" },
+  { id: "pronoun", label: "代名詞" },
+  { id: "interjection", label: "間投詞" },
+  { id: "phrase", label: "熟語・フレーズ" },
+] as const;
+
+export type PartOfSpeechId = (typeof PARTS_OF_SPEECH)[number]["id"];
+
+export function getPartOfSpeech(id: PartOfSpeechId | null) {
+  return PARTS_OF_SPEECH.find((p) => p.id === id) ?? null;
+}
+
 export type VocabWord = {
   id: string;
   word: string;
   meaning: string;
-  example: string;
+  exampleEn: string;
+  exampleJa: string;
+  partOfSpeech: PartOfSpeechId | null;
   bookmarkId: string;
-  status: "learning" | "mastered";
+  status: WordStatusId;
   createdAt: string;
 };
 

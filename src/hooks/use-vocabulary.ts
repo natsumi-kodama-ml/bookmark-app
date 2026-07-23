@@ -1,23 +1,37 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
-import type { VocabWord, VocabWordInput } from "@/lib/types";
+import { PARTS_OF_SPEECH, type PartOfSpeechId, type VocabWord, type VocabWordInput } from "@/lib/types";
 
 const STORAGE_KEY = "daily-news-vocabulary:v1";
 const listeners = new Set<() => void>();
 const EMPTY: VocabWord[] = [];
 let cache: VocabWord[] | null = null;
 
-// Older entries were saved before the `example` field existed.
+// Older entries predate the exampleEn/exampleJa split and only had a single
+// `example` field (an English sentence) — carry it over as exampleEn.
 function normalize(raw: unknown): VocabWord | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
   if (typeof r.id !== "string" || typeof r.word !== "string") return null;
+  const exampleEn =
+    typeof r.exampleEn === "string"
+      ? r.exampleEn
+      : typeof r.example === "string"
+        ? r.example
+        : "";
+  const partOfSpeech =
+    typeof r.partOfSpeech === "string" &&
+    PARTS_OF_SPEECH.some((p) => p.id === r.partOfSpeech)
+      ? (r.partOfSpeech as PartOfSpeechId)
+      : null;
   return {
     id: r.id,
     word: r.word,
     meaning: typeof r.meaning === "string" ? r.meaning : "",
-    example: typeof r.example === "string" ? r.example : "",
+    exampleEn,
+    exampleJa: typeof r.exampleJa === "string" ? r.exampleJa : "",
+    partOfSpeech,
     bookmarkId: typeof r.bookmarkId === "string" ? r.bookmarkId : "",
     status: r.status === "mastered" ? "mastered" : "learning",
     createdAt: typeof r.createdAt === "string" ? r.createdAt : new Date().toISOString(),
