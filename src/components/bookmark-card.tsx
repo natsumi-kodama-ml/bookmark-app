@@ -21,7 +21,7 @@ export function BookmarkCard({
   onStatusChange: (status: StatusId) => void;
 }) {
   return (
-    <article className="flex flex-col gap-3 rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-shadow hover:shadow-md">
+    <article className="flex flex-col gap-3 rounded-xl bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
         <Link href={`/articles/${bookmark.id}`} className="group flex flex-1 flex-col gap-0.5">
           <h2 className="font-heading text-sm leading-snug font-semibold group-hover:underline">

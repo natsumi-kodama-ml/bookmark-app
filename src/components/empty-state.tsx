@@ -1,8 +1,9 @@
 "use client";
 
-import { BookBookmark, MagnifyingGlass, Plus } from "@phosphor-icons/react";
+import { MagnifyingGlass, Plus } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { BookmarkFormDialog } from "@/components/bookmark-form-dialog";
+import { OpenBookIllustration } from "@/components/illustrations/open-book";
 import type { BookmarkInput } from "@/lib/types";
 
 export function EmptyLibraryState({
@@ -11,10 +12,8 @@ export function EmptyLibraryState({
   onSubmit: (value: BookmarkInput) => void;
 }) {
   return (
-    <div className="flex flex-col items-center gap-4 rounded-2xl bg-card px-6 py-16 text-center ring-1 ring-foreground/10 sm:py-20">
-      <span className="flex size-16 items-center justify-center rounded-full bg-accent/15 text-accent">
-        <BookBookmark weight="duotone" className="size-8" />
-      </span>
+    <div className="flex flex-col items-center gap-4 rounded-2xl bg-card px-6 py-16 text-center shadow-sm sm:py-20">
+      <OpenBookIllustration className="h-16 w-20 text-foreground" />
       <div className="flex flex-col gap-1.5">
         <p className="font-heading text-base font-semibold">
           まだ記事は登録されていません
@@ -45,7 +44,7 @@ export function EmptyLibraryState({
 
 export function EmptySearchState({ onClear }: { onClear: () => void }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-2xl bg-card px-6 py-12 text-center ring-1 ring-foreground/10">
+    <div className="flex flex-col items-center gap-3 rounded-2xl bg-card px-6 py-12 text-center shadow-sm">
       <span className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
         <MagnifyingGlass className="size-6" />
       </span>

@@ -21,10 +21,9 @@ export function CategoryPicker({
             onClick={() => onChange(active ? null : c.id)}
             className={cn(
               "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-all",
-              c.colorClass,
               active
-                ? "ring-2 ring-offset-1 ring-foreground/30"
-                : "opacity-60 hover:opacity-100",
+                ? "bg-accent text-accent-foreground"
+                : "bg-muted text-muted-foreground hover:text-foreground",
             )}
           >
             <span>{c.emoji}</span>

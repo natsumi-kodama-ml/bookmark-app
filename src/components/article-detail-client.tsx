@@ -31,7 +31,7 @@ export function ArticleDetailClient({ id }: { id: string }) {
   if (!bookmark) {
     return (
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-10 sm:px-6">
-        <div className="flex flex-col items-center gap-3 rounded-2xl bg-card px-6 py-12 text-center ring-1 ring-foreground/10">
+        <div className="flex flex-col items-center gap-3 rounded-2xl bg-card px-6 py-12 text-center shadow-sm">
           <p className="font-heading text-base font-semibold">
             記事が見つかりません
           </p>
@@ -64,7 +64,7 @@ export function ArticleDetailClient({ id }: { id: string }) {
         記事一覧
       </Button>
 
-      <div className="flex flex-col gap-4 rounded-2xl bg-card p-5 ring-1 ring-foreground/10 sm:p-6">
+      <div className="flex flex-col gap-4 rounded-2xl bg-card p-5 shadow-sm sm:p-6">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col gap-1">
             <h1 className="font-heading text-lg leading-snug font-bold">
@@ -139,7 +139,7 @@ export function ArticleDetailClient({ id }: { id: string }) {
         </div>
 
         {bookmark.memo && (
-          <div className="flex flex-col gap-1 border-t border-border pt-4">
+          <div className="flex flex-col gap-1 rounded-lg bg-muted p-3">
             <p className="text-xs font-medium text-muted-foreground">メモ</p>
             <p className="text-sm whitespace-pre-wrap">{bookmark.memo}</p>
           </div>
@@ -173,7 +173,7 @@ export function ArticleDetailClient({ id }: { id: string }) {
         </div>
 
         {articleWords.length === 0 ? (
-          <p className="rounded-xl bg-card px-4 py-6 text-center text-sm text-muted-foreground ring-1 ring-foreground/10">
+          <p className="rounded-xl bg-card px-4 py-6 text-center text-sm text-muted-foreground shadow-sm">
             まだ単語が登録されていません。この記事で覚えた単語を追加しましょう。
           </p>
         ) : (
@@ -181,7 +181,7 @@ export function ArticleDetailClient({ id }: { id: string }) {
             {articleWords.map((w) => (
               <div
                 key={w.id}
-                className="flex flex-col gap-1 rounded-xl bg-card p-3 ring-1 ring-foreground/10"
+                className="flex flex-col gap-1 rounded-xl bg-card p-3 shadow-sm"
               >
                 <div className="flex items-start justify-between gap-1">
                   <div className="flex flex-col gap-1">

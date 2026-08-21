@@ -9,6 +9,7 @@ import { WordFormDialog } from "@/components/word-form-dialog";
 import { WordStatusSelect } from "@/components/word-status-select";
 import { PartOfSpeechBadge } from "@/components/badges";
 import { CollapsibleArchive } from "@/components/collapsible-archive";
+import { OpenBookIllustration } from "@/components/illustrations/open-book";
 import { useVocabulary } from "@/hooks/use-vocabulary";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { formatDate } from "@/lib/format";
@@ -48,7 +49,7 @@ export default function VocabularyPage() {
     return (
       <div
         key={w.id}
-        className="flex items-start justify-between gap-3 rounded-xl bg-card p-4 ring-1 ring-foreground/10"
+        className="flex items-start justify-between gap-3 rounded-xl bg-card p-4 shadow-sm"
       >
         <div className="flex flex-col gap-1">
           <p className="text-sm font-semibold">{w.word}</p>
@@ -119,10 +120,8 @@ export default function VocabularyPage() {
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
       {words.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl bg-card px-6 py-16 text-center ring-1 ring-foreground/10 sm:py-20">
-          <span className="flex size-16 items-center justify-center rounded-full bg-accent/15 text-2xl">
-            🔤
-          </span>
+        <div className="flex flex-col items-center gap-3 rounded-2xl bg-card px-6 py-16 text-center shadow-sm sm:py-20">
+          <OpenBookIllustration className="h-16 w-20 text-foreground" />
           <p className="font-heading text-base font-semibold">
             まだ単語が登録されていません
           </p>
@@ -146,7 +145,7 @@ export default function VocabularyPage() {
           </div>
 
           {filtered.length === 0 ? (
-            <p className="rounded-2xl bg-card px-6 py-12 text-center text-sm text-muted-foreground ring-1 ring-foreground/10">
+            <p className="rounded-2xl bg-card px-6 py-12 text-center text-sm text-muted-foreground shadow-sm">
               該当する単語がありません。
             </p>
           ) : (

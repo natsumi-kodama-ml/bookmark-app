@@ -16,7 +16,6 @@ export function LevelPicker({
     <div className="flex flex-col gap-1.5">
       <div className="flex flex-wrap gap-1">
         {LEVELS.map((n) => {
-          const band = getLevelBand(n);
           const active = value === n;
           return (
             <button
@@ -25,10 +24,9 @@ export function LevelPicker({
               onClick={() => onChange(active ? null : n)}
               className={cn(
                 "flex size-7 items-center justify-center rounded-full text-xs font-medium transition-all",
-                band?.colorClass,
                 active
-                  ? "ring-2 ring-offset-1 ring-foreground/30"
-                  : "opacity-50 hover:opacity-100",
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-muted text-muted-foreground hover:text-foreground",
               )}
             >
               {n}
